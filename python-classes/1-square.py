@@ -1,13 +1,19 @@
 #!/usr/bin/python3
 """
-This is an example for creating a class.
+This module defines a Square class.
 """
 
 
 class Square:
     """
-    Square class represents a square.
-    Now this class is doing something but I don't have enough "axod" to explain it
+    Square class represents a geometric square shape.
     """
-    def __init__(self,size):
+
+    def __init__(self, size):
+        """
+        Initializes a new Square instance.
+
+        Args:
+            size: The size of the square (no type/value verification yet).
+        """
         self.__size = size
