@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-def uniq_add(s1={}, s2={}):
+def common_elements(s1={}, s2={}):
     result = []
     for i in s2:
         if i in s1:
