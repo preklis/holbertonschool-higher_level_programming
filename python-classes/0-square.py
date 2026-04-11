@@ -1,12 +1,12 @@
 #!/usr/bin/python3
-"""Square Class
-
-This class don't do anything for the moment
-
+"""
+This is an example for creating a class.
 """
 
 
 class Square:
-""" Tis Class just passes"""
-
+    """
+    Square class represents a square.
+    Now this class is empty.
+    """
     pass
