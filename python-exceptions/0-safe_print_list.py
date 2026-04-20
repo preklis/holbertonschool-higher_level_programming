@@ -1,9 +1,9 @@
 #!/usr/bin/python3
-def safe_print_list(l=[], i=0):
+def safe_print_list(my_list=[], index=0):
     count = 0
-    for i in  range (0,i):
+    for id in  range (0, index):
         try:
-            print(l[i],end="")
+            print(my_list[id], end="")
             count += 1
         except IndexError:
             break
