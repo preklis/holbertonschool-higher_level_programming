@@ -1,0 +1,10 @@
+#!/usr/bin/python3
+import urllib.request
+url = urllib.request.Request('https://intranet.hbtn.io/status')
+with urllib.request.urlopen(url) as response:
+    body = response.read()
+
+print("Body response:")
+print('\t- type: {}'.format(type(body)))
+print('\t- content: {}'.format(body))
+print('\t- utf8: {}'.format(body.decode('utf-8')))
