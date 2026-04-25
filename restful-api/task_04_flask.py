@@ -1,9 +1,9 @@
-#!/usr/bin/python3
-
+#!/usr/bin/env python3
 from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
+# In-memory storage (DO NOT prefill when submitting to checker)
 users = {}
 
 
@@ -12,34 +12,50 @@ def home():
     return "Welcome to the Flask API!"
 
 
-@app.route("/data")
-def get_data():
-    return jsonify(list(users.keys()))
-
-
 @app.route("/status")
 def status():
     return "OK"
 
 
-@app.route("/users/<username>")
+@app.route("/data")
+def data():
+    return jsonify(list(users.keys()))
+
+
+@app.route("/users/<username>", methods=["GET"])
 def get_user(username):
     user = users.get(username)
     if user:
         return jsonify(user)
-    else:
-        return jsonify({"error": "User not found"}), 404
+    return jsonify({"error": "User not found"}), 404
 
 
 @app.route("/add_user", methods=["POST"])
 def add_user():
-    user_data = request.get_json()
-    username = user_data.get("username")
-    if not username:
-        return jsonify({"error": "Username is required"}), 400
-    users[username] = user_data
-    return jsonify({"message": "User added", "user": user_data}), 201
+    try:
+        data = request.get_json()
+
+        if data is None:
+            return jsonify({"error": "Invalid JSON"}), 400
+
+        username = data.get("username")
+
+        if not username:
+            return jsonify({"error": "Username is required"}), 400
+
+        if username in users:
+            return jsonify({"error": "Username already exists"}), 409
+
+        users[username] = data
+
+        return jsonify({
+            "message": "User added",
+            "user": data
+        }), 201
+
+    except Exception:
+        return jsonify({"error": "Invalid JSON"}), 400
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
