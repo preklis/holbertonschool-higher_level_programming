@@ -1,46 +1,63 @@
+#!/usr/bin/env python3
 from flask import Flask, render_template, request
-from read_json import read, read_csv, read_json
-
+import json
+import csv
 
 app = Flask(__name__)
 
-@app.route('/')
-def home():
-    return render_template('index.html')
 
-@app.route('/about')
-def about():
-      return render_template('about.html')
+def read_json_file():
+    with open("products.json", "r") as file:
+        return json.load(file)
 
-@app.route('/contact')
-def contact():
-      return render_template('contact.html')
 
-@app.route('/items')
-def items():
-      
-      file_name = "items.json"
-      items = read(file_name)
-      return render_template('items.html', items=items)
+def read_csv_file():
+    products = []
 
-@app.route('/products')
-def display_products():
-    source = request.args.get('source')
-    product_id = request.args.get('id')
+    with open("products.csv", "r") as file:
+        reader = csv.DictReader(file)
 
-    if source == 'json':
-        products = read_json()
-    elif source == 'csv':
-        products = read_csv()
+        for row in reader:
+            row["id"] = int(row["id"])
+            row["price"] = float(row["price"])
+            products.append(row)
+
+    return products
+
+
+@app.route("/products")
+def products():
+    source = request.args.get("source")
+    product_id = request.args.get("id")
+
+    if source == "json":
+        data = read_json_file()
+    elif source == "csv":
+        data = read_csv_file()
     else:
-        return render_template('product_display.html', error="Wrong source")
-    
-    if product_id:
-        products = [product for product in products if str(product['id']) == product_id]
-        if not products:
-            return render_template('product_display.html', error="Product not found")
-	
-    return render_template('product_display.html', products=products)
+        return render_template(
+            "product_display.html",
+            products=[],
+            error="Wrong source"
+        )
 
-if __name__ == '__main__':
-       app.run(debug=True, port=5000)
+    if product_id:
+        product_id = int(product_id)
+        data = [product for product in data if product["id"] == product_id]
+
+        if not data:
+            return render_template(
+                "product_display.html",
+                products=[],
+                error="Product not found"
+            )
+
+    return render_template(
+        "product_display.html",
+        products=data,
+        error=None
+    )
+
+
+if __name__ == "__main__":
+    app.run(debug=True, port=5000)
